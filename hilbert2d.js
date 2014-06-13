@@ -10,7 +10,6 @@ exports.d2xy = function(d) {
   while (d > 0) {
     var ry = 1 & (d/2);
     var rx = 1 & (ry ^ d);
-    log("s:"+s+" d:"+d+" r:"+rx+','+ry);
 
     // Rotate, if need be
     if (rx == 0) {
@@ -67,7 +66,6 @@ exports.xy2d = function(x, y) {
     var ry = y&s && 1;
     d *= 4;
     d += horseshoe2d[2*ry + rx];
-    log("s: " + s + " d: " + d + " r:("+rx+','+ry+')');
     if (rx == 0) {
       if (ry == 1) {
         x = s-1 - x;

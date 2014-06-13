@@ -12,39 +12,30 @@ pp = function(p) {return p.pp();};
 var d2horseshoe = [0, 1, 3, 2, 6, 7, 5, 4];
 var horseshoe2d = [0, 1, 3, 2, 7, 6, 4, 5];
 
-exports.d2xyz = function() {
-  var args = [].slice.call(arguments);
-  if (args.length == 1 && args[0] instanceof Array) {
-    args = args[0];
+exports.d2xyz = function(d) {
+  d = Math.floor(d);
+  var p = new Point();
+  var s = 1;
+  var iter = 0;
+  while (d > 0) {
+    var xBit = d & 1;
+    var yBit = (d/2) & 1;
+    var zBit = (d/4) & 1;
+
+    var regs = new Point(xBit ^ yBit, yBit ^ zBit, zBit);
+    p = p.rotate(regs, s-1).add(regs.mult(s));
+
+    d = Math.floor(d/8);
+    s *= 2;
+    iter++;
   }
-  var points = args.map(function(d) {
-    d = Math.floor(d);
-    var p = new Point();
-    var s = 1;
-    var iter = 0;
-    while (d > 0) {
-      var xBit = d & 1;
-      var yBit = (d/2) & 1;
-      var zBit = (d/4) & 1;
-
-      var regs = new Point(xBit ^ yBit, yBit ^ zBit, zBit);
-      p = p.rotate(regs, s-1).add(regs.mult(s));
-
-      d = Math.floor(d/8);
-      s *= 2;
-      iter++;
-    }
-    if (iter % 3 == 0) {
-      return new Point(p.z, p.x, p.y);
-    } else if (iter % 3 == 1) {
-      return p;
-    } else {
-      return new Point(p.y, p.z, p.x);
-    }
-  });
-
-  if (points.length == 1) return points[0];
-  return points;
+  if (iter % 3 == 0) {
+    return new Point(p.z, p.x, p.y);
+  } else if (iter % 3 == 1) {
+    return p;
+  } else {
+    return new Point(p.y, p.z, p.x);
+  }
 };
 
 exports.xyz2d = function(x, y, z) {
