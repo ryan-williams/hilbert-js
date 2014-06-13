@@ -29,13 +29,7 @@ exports.d2xyz = function(d) {
     s *= 2;
     iter++;
   }
-  if (iter % 3 == 0) {
-    return new Point(p.z, p.x, p.y);
-  } else if (iter % 3 == 1) {
-    return p;
-  } else {
-    return new Point(p.y, p.z, p.x);
-  }
+  return p.rotateLeft(iter + 2);
 };
 
 exports.xyz2d = function(x, y, z) {
@@ -51,11 +45,7 @@ exports.xyz2d = function(x, y, z) {
   }
 
   var d = 0;
-  if (level == 1) {
-    p = p.rotateRight(1);
-  } else if (level == 2) {
-    p = p.rotateLeft(1);
-  }
+  p = p.rotateRight(level);
   while (s > 0) {
     var regs = new Point(p.x&s && 1, p.y&s && 1, p.z&s && 1);
 
