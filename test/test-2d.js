@@ -2,8 +2,7 @@
 var assert = require('assert');
 
 var module = require('../hilbert');
-var xy2d = module.xy2d;
-var d2xy = module.d2xy;
+var h = new module.Hilbert2d();
 
 var eq = assert.equal;
 
@@ -78,7 +77,7 @@ describe('d2xy', function() {
   it('should match the oracle', function() {
     for (d in d2xyOracle) {
       var expected = d2xyOracle[d];
-      var actual = d2xy(d);
+      var actual = h.xy(d);
       eq(expected[0], actual.x, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
       eq(expected[1], actual.y, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
     }
@@ -97,7 +96,7 @@ describe('xy2d', function() {
     for (x in xy2dOracle) {
       for (y in xy2dOracle[x]) {
         var expected = xy2dOracle[x][y];
-        var actual = xy2d(x, y);
+        var actual = h.d(x, y);
         eq(expected, actual, "xy2d(["+x+','+y+"]) should be " + expected + ", got " + actual);
       }
     }
@@ -112,7 +111,7 @@ describe('d2xy heuristics:', function() {
     var maxPerSide = 256;
 
     for (var d = 0; d < maxPerSide*maxPerSide; d++) {
-      var xy = d2xy(d);
+      var xy = h.xy(d);
 
       seenPoints[xy.x] = seenPoints[xy.x] || [];
       eq(false, xy.y in seenPoints[xy.x],
