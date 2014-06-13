@@ -115,7 +115,7 @@ describe('heuristics', function() {
       var xyz = d2xyz(d);
 
       if (previous) {
-        var distance = Math.abs(previous.x - xyz.x) + Math.abs(previous.y - xyz.y) + Math.abs(previous.z - xyz.z);
+        var distance = xyz.manhattanDistance(previous);
         assert.equal(1, distance, "d2xyz("+(d-1)+') -> d2xyz('+d+') is ('+previous.pp()+') -> (' + xyz.pp() + ')');
       }
       previous = xyz;
