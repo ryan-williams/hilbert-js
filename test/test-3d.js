@@ -1,8 +1,7 @@
 
 var assert = require('assert');
 
-var d2xyz = require('../hilbert').d2xyz;
-var xyz2d = require('../hilbert').xyz2d;
+var h = new (require('../hilbert').Hilbert3d)();
 
 var d2xyzOracle = {
   0:  [0,0,0],
@@ -75,7 +74,7 @@ describe('d2xyz', function() {
   it('should match the oracle', function() {
     for (d in d2xyzOracle) {
       var expected = d2xyzOracle[d];
-      var actual = d2xyz(d);
+      var actual = h.xyz(d);
       var msg = "d2xyz("+d+") should equal ("+expected.join(',')+"), got " + actual.pp();
       assert.equal(expected[0], actual.x, msg);
       assert.equal(expected[1], actual.y, msg);
@@ -98,7 +97,7 @@ describe('xyz2d', function() {
       for (y in xyz2dOracle[x]) {
         for (z in xyz2dOracle[x][y]) {
           var expected = xyz2dOracle[x][y][z];
-          var actual = xyz2d(x, y, z);
+          var actual = h.d(x, y, z);
           assert.equal(expected, actual, 'xyz2d('+x+','+y+','+z+') should equal ' + expected + ', got ' + actual);
         }
       }
@@ -112,7 +111,7 @@ describe('heuristics', function() {
     var seenPoints = [];
     var maxPerSide = 32;
     for (var d = 0; d < maxPerSide * maxPerSide * maxPerSide; d++) {
-      var xyz = d2xyz(d);
+      var xyz = h.xyz(d);
 
       if (previous) {
         var distance = xyz.manhattanDistance(previous);
