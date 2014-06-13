@@ -1,8 +1,7 @@
 
 var assert = require('assert');
 
-var module = require('../hilbert');
-var h = new module.Hilbert2d();
+var h = new (require('../hilbert').Hilbert2d)();
 
 var eq = assert.equal;
 
