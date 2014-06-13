@@ -75,16 +75,14 @@ var d2xyOracle = {
 };
 
 describe('d2xy', function() {
-  for (d in d2xyOracle) {
-    describe('d2xy(' + d + ')', function() {
+  it('should match the oracle', function() {
+    for (d in d2xyOracle) {
       var expected = d2xyOracle[d];
       var actual = d2xy(d);
-      it('should know that d2xy(' + d +') == [' + expected.join(',') + ']', function() {
-        eq(expected[0], actual.x);
-        eq(expected[1], actual.y);
-      });
-    });
-  }
+      eq(expected[0], actual.x, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
+      eq(expected[1], actual.y, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
+    }
+  })
 });
 
 var xy2dOracle = {};
@@ -95,17 +93,15 @@ for (d in d2xyOracle) {
 }
 
 describe('xy2d', function() {
-  for (x in xy2dOracle) {
-    for (y in xy2dOracle[x]) {
-      describe('xy2d(' + x + ',' + y + ')', function() {
+  it('should match the oracle', function() {
+    for (x in xy2dOracle) {
+      for (y in xy2dOracle[x]) {
         var expected = xy2dOracle[x][y];
         var actual = xy2d(x, y);
-        it('should know that xy2d([' + x + ',' + y + ']) == ' + expected, function () {
-          eq(expected, actual);
-        });
-      });
+        eq(expected, actual, "xy2d(["+x+','+y+"]) should be " + expected + ", got " + actual);
+      }
     }
-  }
+  })
 });
 
 describe('d2xy heuristics:', function() {
