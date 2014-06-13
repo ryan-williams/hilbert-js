@@ -1,0 +1,24 @@
+{
+  "name": "hilbert",
+  "version": "1.0.0",
+  "main": "./hilbert",
+  "description": "A module that computes Hilbert space-filling-curve coordinates in 2- or 3-dimensions.",
+  "keywords": [
+        "hilbert",
+        "curve",
+        "space-filling",
+        "fractal"
+  ],
+  "author": {
+    "name": "Ryan Williams",
+    "email": "runs.as.coded@gmail.com",
+    "twitter": "RunsAsCoded"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/ryan-williams/hilbert-js.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
