@@ -15,14 +15,25 @@ var Hilbert3d = exports.Hilbert3d = function(options) {
   options = options || {};
   if (typeof options == 'number') {
     this.size = options;
-    this.anchorAxisOrder = 'xyz';
   } else {
     // should be empty if we're prioritizing bottom level.
     this.size = options.top;
 
-    this.anchorAxisOrder = options.axisOrder || 'xyz';
-    if (!(this.anchorAxisOrder in { xyz:1,xzy:1,yxz:1,yzx:1,zxy:1,zyx:1 })) {
+    this.anchorAxisOrder = options.axisOrder;
+    if (this.anchorAxisOrder && !(this.anchorAxisOrder in { xyz:1,xzy:1,yxz:1,yzx:1,zxy:1,zyx:1 })) {
       throw new Error("Invalid axis order: " + anchorAxisOrder);
+    }
+    if (this.anchorAxisOrder == 'xyz') {
+      this.anchorAxisOrder = null;
+    }
+    if (this.anchorAxisOrder) {
+      this.reverseAnchorAxisOrder = {
+        xzy: 'xzy',
+        yxz: 'yxz',
+        yzx: 'zxy',
+        zxy: 'yzx',
+        zyx: 'zyx'
+      }[this.anchorAxisOrder]
     }
   }
   if (this.size) {
@@ -54,9 +65,11 @@ var Hilbert3d = exports.Hilbert3d = function(options) {
       iter++;
     }
     if (this.size) {
-      return p.rotateLeft(iter - this.log2parity + 1);
+      p = p.rotateLeft(iter - this.log2parity + 1);
+    } else {
+      p = p.rotateLeft(iter);
     }
-    return p.rotateLeft(iter);
+    return p.shuffle(this.reverseAnchorAxisOrder);
   };
 
   this.xyz2d = this.d = function (x, y, z) {
@@ -67,6 +80,8 @@ var Hilbert3d = exports.Hilbert3d = function(options) {
     for (; 2 * s <= max; s *= 2) {
       level = (level + 1) % 3;
     }
+
+    p = p.shuffle(this.anchorAxisOrder);
     if (this.size) {
       p = p.rotateRight(level - this.log2parity + 1);
     } else {

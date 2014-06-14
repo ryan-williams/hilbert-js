@@ -1,9 +1,10 @@
 #!/bin/sh
 
 ctor_arg=
-echo $1 | grep -q ","
-if [ $? -gt 0 ]; then
+first_arg_is_tuple=$(echo "$1" | perl -ne "print if s/^([0-9]+,)*[0-9]+$/,/")
+if [ "$first_arg_is_tuple" == "" ]; then
 	ctor_arg="$1"
+	#echo "ctor: $ctor_arg"
 	shift
 fi
 

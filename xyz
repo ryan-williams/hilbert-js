@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ctor_arg=
-if [ "${1:0:1}" == "-" ]; then
-	ctor_arg="${1:1}"
+if [ "${1:0:1}" == "-" -o "${1:0:1}" == "{" ]; then
+	ctor_arg="${1#-}"
 	shift
 fi
 

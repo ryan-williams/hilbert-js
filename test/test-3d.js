@@ -71,11 +71,22 @@ var d2xyzOracle = {
   63: [0,3,0]
 };
 
-function testOracle(hilbert, rightRotation) {
-  rightRotation = rightRotation || 0;
+function testOracle(hilbert, arg) {
+  var rightRotation = 0;
+  var shuffle = '';
+  if (typeof arg == 'string') {
+    shuffle = arg.split('');
+  } else if (typeof arg == 'number') {
+    rightRotation = arg;
+  }
   for (d in d2xyzOracle) {
     var original = d2xyzOracle[d];
-    var expected = original.slice(original.length - rightRotation).concat(original.slice(0, original.length - rightRotation));
+    var expected = original;
+    if (rightRotation) {
+      expected = original.slice(original.length - rightRotation).concat(original.slice(0, original.length - rightRotation));
+    } else if (shuffle) {
+      expected = shuffle.map(function(idx) { return expected[idx]; });
+    }
     var actual = hilbert.xyz(d);
     var msg = "d2xyz("+d+") should equal ("+expected.join(',')+"), got " + actual.pp();
     assert.equal(expected[0], actual.x, msg);
@@ -168,5 +179,37 @@ describe('fixed top levels', function() {
   it('should rotate right when top is 64', function() {
     var h = new Hilbert3d(64);
     testOracle(h, 2);
+  });
+});
+
+describe('permuted lowest level', function() {
+  it('should not change when passed identity mapping', function() {
+    var h = new Hilbert3d({ axisOrder: 'xyz' });
+    testOracle(h);
+  });
+
+  it('should pass with "yzx" mapping', function() {
+    var h = new Hilbert3d({ axisOrder: 'yzx' });
+    testOracle(h, "201");
+  });
+
+  it('should pass with "zxy" mapping', function() {
+    var h = new Hilbert3d({ axisOrder: 'zxy' });
+    testOracle(h, "120");
+  });
+
+  it('should pass with "xzy" mapping', function() {
+    var h = new Hilbert3d({ axisOrder: 'xzy' });
+    testOracle(h, "021");
+  });
+
+  it('should pass with "yxz" mapping', function() {
+    var h = new Hilbert3d({ axisOrder: 'yxz' });
+    testOracle(h, "102");
+  });
+
+  it('should pass with "zyx" mapping', function() {
+    var h = new Hilbert3d({ axisOrder: 'zyx' });
+    testOracle(h, "210");
   });
 });

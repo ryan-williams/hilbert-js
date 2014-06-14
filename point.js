@@ -71,6 +71,11 @@ var Point = exports.Point = function(x, y, z) {
     return new Point(this.y, this.z, this.x);
   };
 
+  this.shuffle = function(template) {
+    if (!template) return this;
+    return new Point(this[template[0]], this[template[1]], this[template[2]]);
+  };
+
   this.pp = function() {
     return [this.x,this.y,this.z].join(',');
   };
