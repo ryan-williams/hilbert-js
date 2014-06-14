@@ -56,7 +56,7 @@ var Hilbert3d = exports.Hilbert3d = function(options) {
       d += horseshoe2d[regs.n];
 
       level = (level + 2) % 3;
-      p = new Point(p.x % s, p.y % s, p.z % s);
+      p = p.mod(s);
       p = p.unrotate(regs, s - 1);
       s = Math.floor(s / 2);
     }

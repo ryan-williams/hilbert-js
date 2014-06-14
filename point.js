@@ -27,6 +27,10 @@ var Point = exports.Point = function(x, y, z) {
     return new Point(this.x + n.x, this.y + n.y, this.z + n.z);
   };
 
+  this.mod = function(n) {
+    return new Point(this.x % n, this.y % n, this.z % n);
+  };
+
   this.rotate = function(regs, n) {
     if (regs.n == 0) {
       return new Point(this.z, this.x, this.y);
