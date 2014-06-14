@@ -1,6 +1,6 @@
 {
   "name": "hilbert",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "./hilbert",
   "description": "A module that computes Hilbert space-filling-curve coordinates in 2- or 3-dimensions.",
   "keywords": [
