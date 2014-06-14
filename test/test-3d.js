@@ -184,32 +184,32 @@ describe('fixed top levels', function() {
 
 describe('permuted lowest level', function() {
   it('should not change when passed identity mapping', function() {
-    var h = new Hilbert3d({ axisOrder: 'xyz' });
+    var h = new Hilbert3d('xyz');
     testOracle(h);
   });
 
   it('should pass with "yzx" mapping', function() {
-    var h = new Hilbert3d({ axisOrder: 'yzx' });
+    var h = new Hilbert3d('yzx');
     testOracle(h, "201");
   });
 
   it('should pass with "zxy" mapping', function() {
-    var h = new Hilbert3d({ axisOrder: 'zxy' });
+    var h = new Hilbert3d('zxy');
     testOracle(h, "120");
   });
 
   it('should pass with "xzy" mapping', function() {
-    var h = new Hilbert3d({ axisOrder: 'xzy' });
+    var h = new Hilbert3d('xzy');
     testOracle(h, "021");
   });
 
   it('should pass with "yxz" mapping', function() {
-    var h = new Hilbert3d({ axisOrder: 'yxz' });
+    var h = new Hilbert3d('yxz');
     testOracle(h, "102");
   });
 
   it('should pass with "zyx" mapping', function() {
-    var h = new Hilbert3d({ axisOrder: 'zyx' });
+    var h = new Hilbert3d('zyx');
     testOracle(h, "210");
   });
 });

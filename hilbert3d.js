@@ -10,32 +10,36 @@ log = function(s) {
 var d2horseshoe = [0, 1, 3, 2, 6, 7, 5, 4];
 var horseshoe2d = [0, 1, 3, 2, 7, 6, 4, 5];
 
-var Hilbert3d = exports.Hilbert3d = function(options) {
+var Hilbert3d = exports.Hilbert3d = function(options, axisOrderOpt) {
 
   options = options || {};
   if (typeof options == 'number') {
     this.size = options;
+    this.anchorAxisOrder = axisOrderOpt;
+  } else if (typeof options == 'string') {
+    this.anchorAxisOrder = options;
   } else {
     // should be empty if we're prioritizing bottom level.
     this.size = options.top;
-
     this.anchorAxisOrder = options.axisOrder;
-    if (this.anchorAxisOrder && !(this.anchorAxisOrder in { xyz:1,xzy:1,yxz:1,yzx:1,zxy:1,zyx:1 })) {
-      throw new Error("Invalid axis order: " + anchorAxisOrder);
-    }
-    if (this.anchorAxisOrder == 'xyz') {
-      this.anchorAxisOrder = null;
-    }
-    if (this.anchorAxisOrder) {
-      this.reverseAnchorAxisOrder = {
-        xzy: 'xzy',
-        yxz: 'yxz',
-        yzx: 'zxy',
-        zxy: 'yzx',
-        zyx: 'zyx'
-      }[this.anchorAxisOrder]
-    }
   }
+
+  if (this.anchorAxisOrder && !(this.anchorAxisOrder in { xyz:1,xzy:1,yxz:1,yzx:1,zxy:1,zyx:1 })) {
+    throw new Error("Invalid axis order: " + anchorAxisOrder);
+  }
+  if (this.anchorAxisOrder == 'xyz') {
+    this.anchorAxisOrder = null;
+  }
+  if (this.anchorAxisOrder) {
+    this.reverseAnchorAxisOrder = {
+      xzy: 'xzy',
+      yxz: 'yxz',
+      yzx: 'zxy',
+      zxy: 'yzx',
+      zyx: 'zyx'
+    }[this.anchorAxisOrder]
+  }
+
   if (this.size) {
     this.log2size = 0;
     var pow2 = 1;

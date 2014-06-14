@@ -1,18 +1,21 @@
 
-var Hilbert2d = exports.Hilbert2d = function(options) {
+var Hilbert2d = exports.Hilbert2d = function(options, axisOrderOpt) {
   options = options || {};
   if (typeof options == 'number') {
     this.size = options;
-    this.anchorAxisOrder = 'xy';
+    this.anchorAxisOrder = axisOrderOpt || 'xy';
+  } else if (typeof options == 'string') {
+    this.anchorAxisOrder = options;
   } else {
     // should be empty if we're prioritizing bottom level.
     this.size = options.top;
-
     this.anchorAxisOrder = options.axisOrder || 'xy';
-    if (!(this.anchorAxisOrder in {xy:1,yx:1})) {
-      throw new Error("Invalid axis order: " + anchorAxisOrder);
-    }
   }
+
+  if (!(this.anchorAxisOrder in {xy:1,yx:1})) {
+    throw new Error("Invalid axis order: " + anchorAxisOrder);
+  }
+
   if (this.size) {
     this.log2size = 0;
     var pow2 = 1;

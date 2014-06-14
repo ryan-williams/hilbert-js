@@ -178,7 +178,7 @@ describe('handles rotations with ceilings', function() {
 
 describe('bottom-level yx-prioritization', function() {
   it('should invert', function() {
-    var h = new Hilbert2d({ axisOrder: 'yx' });
+    var h = new Hilbert2d('yx');
     assert.equal('yx', h.anchorAxisOrder);
     testOracle(h, true);
   });
@@ -186,14 +186,14 @@ describe('bottom-level yx-prioritization', function() {
 
 describe('top-level yx-prioritization for non-powers-of-4', function() {
   it('should invert', function() {
-    var h = new Hilbert2d({ axisOrder: 'yx', top: 2 });
+    var h = new Hilbert2d(2, 'yx');
     assert.equal(2, h.size);
     assert.equal('yx', h.anchorAxisOrder);
     testOracle(h, true);
   });
 
   it('should invert', function() {
-    var h = new Hilbert2d({ axisOrder: 'yx', top: 8 });
+    var h = new Hilbert2d(8, 'yx');
     assert.equal(8, h.size);
     assert.equal('yx', h.anchorAxisOrder);
     testOracle(h, true);
@@ -202,14 +202,14 @@ describe('top-level yx-prioritization for non-powers-of-4', function() {
 
 describe('top-level yx-prioritization for powers-of-4', function() {
   it('should not invert', function() {
-    var h = new Hilbert2d({ axisOrder: 'yx', top: 4 });
+    var h = new Hilbert2d(4, 'yx');
     assert.equal(4, h.size);
     assert.equal('yx', h.anchorAxisOrder);
     testOracle(h);
   });
 
   it('should not invert', function() {
-    var h = new Hilbert2d({ axisOrder: 'yx', top: 16 });
+    var h = new Hilbert2d(16, 'yx');
     assert.equal(16, h.size);
     assert.equal('yx', h.anchorAxisOrder);
     testOracle(h);
