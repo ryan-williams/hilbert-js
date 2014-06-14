@@ -60,17 +60,16 @@ var Hilbert3d = exports.Hilbert3d = function(options) {
   };
 
   this.xyz2d = this.d = function (x, y, z) {
-    x = Math.floor(x);
-    y = Math.floor(y);
-    z = Math.floor(z);
-    var p = new Point(x, y, z);
+    var p = new Point(x, y, z).map(Math.floor);
     var s = 1;
     var level = 0;
-    if (!this.size) {
-      var max = Math.max(x, y, z);
-      for (; 2 * s <= max; s *= 2) {
-        level = (level + 1) % 3;
-      }
+    var max = Math.max.apply(Math, p.arr);
+    for (; 2 * s <= max; s *= 2) {
+      level = (level + 1) % 3;
+    }
+    if (this.size) {
+      p = p.rotateRight(level - this.log2parity + 1);
+    } else {
       p = p.rotateRight(level);
     }
 

@@ -81,6 +81,11 @@ function testOracle(hilbert, rightRotation) {
     assert.equal(expected[0], actual.x, msg);
     assert.equal(expected[1], actual.y, msg);
     assert.equal(expected[2], actual.z, msg);
+
+    var invertedD = hilbert.d.apply(hilbert, actual.arr);
+    assert.equal(d, invertedD,
+                "d2xyz(xyz2d("+d+")) == d2xyz(" + actual.pp() + ") == " + invertedD + ", should be " + d
+    );
   }
 }
 
@@ -153,5 +158,15 @@ describe('fixed top levels', function() {
   it('should not change when top is 16', function() {
     var h = new Hilbert3d(16);
     testOracle(h);
+  });
+
+  it('should rotate left when top is 32', function() {
+    var h = new Hilbert3d(32);
+    testOracle(h, 1);
+  });
+
+  it('should rotate right when top is 64', function() {
+    var h = new Hilbert3d(64);
+    testOracle(h, 2);
   });
 });
