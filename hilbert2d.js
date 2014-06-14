@@ -101,11 +101,9 @@ var Hilbert2d = exports.Hilbert2d = function(options) {
     };
     var s = 1;
     var level = 1;
-    if (!this.size) {
-      var max = Math.max(curPos.x, curPos.y);
-      for (; 2 * s <= max; s *= 2) {
-        level = (level + 1) % 2;
-      }
+    var max = Math.max(curPos.x, curPos.y);
+    for (; 2 * s <= max; s *= 2) {
+      level = (level + 1) % 2;
     }
     curPos = this.maybeRotate(curPos, level);
 

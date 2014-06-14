@@ -77,6 +77,7 @@ function testOracle(hilbert, reverse) {
     var actual = hilbert.xy(d);
     eq(expected[0], actual.x, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
     eq(expected[1], actual.y, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
+    eq(d, hilbert.d(actual.x, actual.y));
   }
 }
 
