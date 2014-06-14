@@ -1,7 +1,6 @@
 
 var assert = require('assert');
-
-var h = new (require('../hilbert').Hilbert2d)();
+var Hilbert2d = require('../hilbert').Hilbert2d;
 
 var eq = assert.equal;
 
@@ -72,15 +71,20 @@ var d2xyOracle = {
   63: [0,7]
 };
 
+function testOracle(hilbert, reverse) {
+  for (d in d2xyOracle) {
+    var expected = !!reverse ? d2xyOracle[d].slice(0).reverse() : d2xyOracle[d];
+    var actual = hilbert.xy(d);
+    eq(expected[0], actual.x, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
+    eq(expected[1], actual.y, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
+  }
+}
+
 describe('d2xy', function() {
   it('should match the oracle', function() {
-    for (d in d2xyOracle) {
-      var expected = d2xyOracle[d];
-      var actual = h.xy(d);
-      eq(expected[0], actual.x, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
-      eq(expected[1], actual.y, "d2xy("+d+") should equal ("+expected.join(',')+"); got ("+actual.x+','+actual.y+')');
-    }
-  })
+    var h = new Hilbert2d();
+    testOracle(h);
+  });
 });
 
 var xy2dOracle = {};
@@ -92,6 +96,7 @@ for (d in d2xyOracle) {
 
 describe('xy2d', function() {
   it('should match the oracle', function() {
+    var h = new Hilbert2d();
     for (x in xy2dOracle) {
       for (y in xy2dOracle[x]) {
         var expected = xy2dOracle[x][y];
@@ -104,6 +109,8 @@ describe('xy2d', function() {
 
 describe('d2xy heuristics:', function() {
   it('should pass all heuristics', function() {
+    var h = new Hilbert2d();
+
     var previous = null;
     var seenPoints = [];
 
@@ -133,5 +140,77 @@ describe('d2xy heuristics:', function() {
         assert(y in seenPoints[x], "Missing (" + x + ',' + y + ")");
       }
     }
+  });
+});
+
+describe('handles rotations with ceilings', function() {
+
+  it('should not invert when given a ceiling that is not a power of 4', function() {
+    var h = new Hilbert2d(2);
+    assert.equal(2, h.size);
+    assert.equal('xy', h.anchorAxisOrder);
+    testOracle(h);
+  });
+
+  it('should invert when given a ceiling that is a power of 4', function () {
+    var h = new Hilbert2d(4);
+    assert.equal(4, h.size);
+    assert.equal('xy', h.anchorAxisOrder);
+    testOracle(h, true);
+  });
+
+  it('should not invert when given a ceiling of 8', function() {
+    var h = new Hilbert2d(8);
+    assert.equal(8, h.size);
+    assert.equal('xy', h.anchorAxisOrder);
+    testOracle(h);
+  });
+
+  it('should invert when given a ceiling that is a power of 4', function() {
+    var h = new Hilbert2d(16);
+    assert.equal(16, h.size);
+    assert.equal('xy', h.anchorAxisOrder);
+    testOracle(h, true);
+  });
+
+});
+
+describe('bottom-level yx-prioritization', function() {
+  it('should invert', function() {
+    var h = new Hilbert2d({ axisOrder: 'yx' });
+    assert.equal('yx', h.anchorAxisOrder);
+    testOracle(h, true);
+  });
+});
+
+describe('top-level yx-prioritization for non-powers-of-4', function() {
+  it('should invert', function() {
+    var h = new Hilbert2d({ axisOrder: 'yx', top: 2 });
+    assert.equal(2, h.size);
+    assert.equal('yx', h.anchorAxisOrder);
+    testOracle(h, true);
+  });
+
+  it('should invert', function() {
+    var h = new Hilbert2d({ axisOrder: 'yx', top: 8 });
+    assert.equal(8, h.size);
+    assert.equal('yx', h.anchorAxisOrder);
+    testOracle(h, true);
+  });
+});
+
+describe('top-level yx-prioritization for powers-of-4', function() {
+  it('should not invert', function() {
+    var h = new Hilbert2d({ axisOrder: 'yx', top: 4 });
+    assert.equal(4, h.size);
+    assert.equal('yx', h.anchorAxisOrder);
+    testOracle(h);
+  });
+
+  it('should not invert', function() {
+    var h = new Hilbert2d({ axisOrder: 'yx', top: 16 });
+    assert.equal(16, h.size);
+    assert.equal('yx', h.anchorAxisOrder);
+    testOracle(h);
   });
 });

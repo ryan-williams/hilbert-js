@@ -1,11 +1,26 @@
 
 var Hilbert2d = exports.Hilbert2d = function(options) {
   options = options || {};
-  options.axisOrder = options.axisOrder || { bottom: 'xy' };
-  var anchorToTopAxis = !!options.axisOrder.top;
-  var anchorAxisOrder = options.axisOrder.top || options.axisOrder.bottom || 'xy';
-  if (!(anchorAxisOrder in {xy:1,yx:1})) {
-    throw new Error("Invalid axis order: " + anchorAxisOrder);
+  if (typeof options == 'number') {
+    this.size = options;
+    this.anchorAxisOrder = 'xy';
+  } else {
+    // should be empty if we're prioritizing bottom level.
+    this.size = options.top;
+
+    this.anchorAxisOrder = options.axisOrder || 'xy';
+    if (!(this.anchorAxisOrder in {xy:1,yx:1})) {
+      throw new Error("Invalid axis order: " + anchorAxisOrder);
+    }
+  }
+  if (this.size) {
+    this.log2size = 0;
+    var pow2 = 1;
+    for (; pow2 < this.size; pow2 *= 2, this.log2size++) {}
+    if (pow2 != this.size) {
+      throw new Error("Invalid size: " + this.size + ". Must be a power of 2.");
+    }
+    this.log2parity = (this.log2size % 2);
   }
 
   function invert(point) {
@@ -15,13 +30,20 @@ var Hilbert2d = exports.Hilbert2d = function(options) {
     };
   }
 
-  function maybeRotate(point, iter) {
-    if (anchorToTopAxis) {
-      if (anchorAxisOrder == 'yx') {
-        return invert(point);
+  this.maybeRotate = function(point, iter) {
+    if (this.size) {
+      if (this.anchorAxisOrder == 'xy') {
+        if (iter ^ this.log2parity) {
+          return invert(point);
+        }
+      }
+      if (this.anchorAxisOrder == 'yx') {
+        if (!(iter ^ this.log2parity)) {
+          return invert(point);
+        }
       }
     } else {
-      if (anchorAxisOrder == 'xy') {
+      if (this.anchorAxisOrder == 'xy') {
         if (iter == 0) {
           return invert(point);
         }
@@ -32,7 +54,7 @@ var Hilbert2d = exports.Hilbert2d = function(options) {
       }
     }
     return point;
-  }
+  };
 
   this.d2xy = this.xy = function (d) {
     d = Math.floor(d);
@@ -42,7 +64,8 @@ var Hilbert2d = exports.Hilbert2d = function(options) {
     };
     var s = 1;
     var iter = 0;
-    while (d > 0) {
+    var size = this.size || 0;
+    while (d > 0 || s < size) {
       var ry = 1 & (d / 2);
       var rx = 1 & (ry ^ d);
 
@@ -66,7 +89,7 @@ var Hilbert2d = exports.Hilbert2d = function(options) {
       d = Math.floor(d / 4);
       iter = (iter + 1) % 2;
     }
-    return maybeRotate(curPos, iter);
+    return this.maybeRotate(curPos, iter);
   };
 
   var horseshoe2d = [0, 1, 3, 2];
@@ -76,17 +99,15 @@ var Hilbert2d = exports.Hilbert2d = function(options) {
       x: Math.floor(x),
       y: Math.floor(y)
     };
-    x = Math.floor(x);
-    y = Math.floor(y);
     var s = 1;
-    var max = Math.max(curPos.x, curPos.y);
-    var level = 0;
-    for (; 2 * s <= max; s *= 2) {
-      level = (level + 1) % 2;
+    var level = 1;
+    if (!this.size) {
+      var max = Math.max(curPos.x, curPos.y);
+      for (; 2 * s <= max; s *= 2) {
+        level = (level + 1) % 2;
+      }
     }
-    if (level % 2 == 1) {
-      curPos = invert(curPos);
-    }
+    curPos = this.maybeRotate(curPos, level);
 
     var d = 0;
     while (s > 0) {
