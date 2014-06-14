@@ -1,7 +1,8 @@
 
 var assert = require('assert');
 
-var h = new (require('../hilbert').Hilbert3d)();
+var Hilbert3d = require('../hilbert').Hilbert3d;
+var h = new Hilbert3d();
 
 var d2xyzOracle = {
   0:  [0,0,0],
@@ -70,16 +71,22 @@ var d2xyzOracle = {
   63: [0,3,0]
 };
 
+function testOracle(hilbert, rightRotation) {
+  rightRotation = rightRotation || 0;
+  for (d in d2xyzOracle) {
+    var original = d2xyzOracle[d];
+    var expected = original.slice(original.length - rightRotation).concat(original.slice(0, original.length - rightRotation));
+    var actual = hilbert.xyz(d);
+    var msg = "d2xyz("+d+") should equal ("+expected.join(',')+"), got " + actual.pp();
+    assert.equal(expected[0], actual.x, msg);
+    assert.equal(expected[1], actual.y, msg);
+    assert.equal(expected[2], actual.z, msg);
+  }
+}
+
 describe('d2xyz', function() {
   it('should match the oracle', function() {
-    for (d in d2xyzOracle) {
-      var expected = d2xyzOracle[d];
-      var actual = h.xyz(d);
-      var msg = "d2xyz("+d+") should equal ("+expected.join(',')+"), got " + actual.pp();
-      assert.equal(expected[0], actual.x, msg);
-      assert.equal(expected[1], actual.y, msg);
-      assert.equal(expected[2], actual.z, msg);
-    }
+    testOracle(h);
   });
 });
 
@@ -124,5 +131,27 @@ describe('heuristics', function() {
       assert.equal(false, xyz.z in seenPoints[xyz.x][xyz.y], "Saw (" + xyz.pp() + ") at " + seenPoints[xyz.x][xyz.y][xyz.z] + " and also at " + d);
       seenPoints[xyz.x][xyz.y][xyz.z] = d;
     }
+  });
+});
+
+describe('fixed top levels', function() {
+  it('should not change when top is 2', function() {
+    var h = new Hilbert3d(2);
+    testOracle(h);
+  });
+
+  it('should rotate left when top is 4', function() {
+    var h = new Hilbert3d(4);
+    testOracle(h, 1);
+  });
+
+  it('should rotate right when top is 8', function() {
+    var h = new Hilbert3d(8);
+    testOracle(h, 2);
+  });
+
+  it('should not change when top is 16', function() {
+    var h = new Hilbert3d(16);
+    testOracle(h);
   });
 });
