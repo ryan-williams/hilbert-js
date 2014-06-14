@@ -71,20 +71,28 @@ var d2xyzOracle = {
   63: [0,3,0]
 };
 
-function testOracle(hilbert, arg) {
+function testOracle(hilbert, arg1, arg2) {
   var rightRotation = 0;
   var shuffle = '';
-  if (typeof arg == 'string') {
-    shuffle = arg.split('');
-  } else if (typeof arg == 'number') {
-    rightRotation = arg;
+  if (typeof arg1 == 'string') {
+    shuffle = arg1.split('');
+  }
+  if (typeof arg1 == 'number') {
+    rightRotation = arg1;
+  }
+  if (typeof arg2 == 'string') {
+    shuffle = arg2.split('');
+  }
+  if (typeof arg2 == 'number') {
+    rightRotation = arg2;
   }
   for (d in d2xyzOracle) {
     var original = d2xyzOracle[d];
     var expected = original;
     if (rightRotation) {
       expected = original.slice(original.length - rightRotation).concat(original.slice(0, original.length - rightRotation));
-    } else if (shuffle) {
+    }
+    if (shuffle) {
       expected = shuffle.map(function(idx) { return expected[idx]; });
     }
     var actual = hilbert.xyz(d);
@@ -210,6 +218,115 @@ describe('permuted lowest level', function() {
 
   it('should pass with "zyx" mapping', function() {
     var h = new Hilbert3d('zyx');
+    testOracle(h, "210");
+  });
+});
+
+describe('permuted top level with size 2', function() {
+  it('should pass with (2, "yzx") mapping', function() {
+    var h = new Hilbert3d(2, 'yzx');
+    testOracle(h, "201");
+  });
+
+  it('should pass with (2, "zxy") mapping', function() {
+    var h = new Hilbert3d(2, 'zxy');
+    testOracle(h, "120");
+  });
+
+  it('should pass with (2, "xzy") mapping', function() {
+    var h = new Hilbert3d(2, 'xzy');
+    testOracle(h, "021");
+  });
+
+  it('should pass with (2, "yxz") mapping', function() {
+    var h = new Hilbert3d(2, 'yxz');
+    testOracle(h, "102");
+  });
+
+  it('should pass with (2, "zyx") mapping', function() {
+    var h = new Hilbert3d(2, 'zyx');
+    testOracle(h, "210");
+  });
+});
+
+describe('permuted top level with size 4', function() {
+  it('should pass with (4, "yzx") mapping', function() {
+    var h = new Hilbert3d(4, 'yzx');
+    testOracle(h, "201", 1);
+  });
+
+  it('should pass with (4, "zxy") mapping', function() {
+    var h = new Hilbert3d(4, 'zxy');
+    testOracle(h, "120", 1);
+  });
+
+  it('should pass with (4, "xzy") mapping', function() {
+    var h = new Hilbert3d(4, 'xzy');
+    testOracle(h, "021", 1);
+  });
+
+  it('should pass with (4, "yxz") mapping', function() {
+    var h = new Hilbert3d(4, 'yxz');
+    testOracle(h, "102", 1);
+  });
+
+  it('should pass with (4, "zyx") mapping', function() {
+    var h = new Hilbert3d(4, 'zyx');
+    testOracle(h, "210", 1);
+  });
+});
+
+describe('permuted top level with size 8', function() {
+  it('should pass with (8, "yzx") mapping', function() {
+    var h = new Hilbert3d(8, 'yzx');
+    testOracle(h, "201", 2);
+  });
+
+  it('should pass with (8, "zxy") mapping', function() {
+    var h = new Hilbert3d(8, 'zxy');
+    testOracle(h, "120", 2);
+  });
+
+  it('should pass with (8, "xzy") mapping', function() {
+    var h = new Hilbert3d(8, 'xzy');
+    testOracle(h, "021", 2);
+  });
+
+  it('should pass with (8, "yxz") mapping', function() {
+    var h = new Hilbert3d(8, 'yxz');
+    testOracle(h, "102", 2);
+  });
+
+  it('should pass with (8, "zyx") mapping', function() {
+    var h = new Hilbert3d(8, 'zyx');
+    testOracle(h, "210", 2);
+  });
+});
+
+
+describe('permuted top level with size 16', function() {
+  it('should pass with (16, "yzx") mapping', function() {
+    var h = new Hilbert3d(16, 'yzx');
+    testOracle(h, "201");
+  });
+
+  it('should pass with (16, "zxy") mapping', function() {
+    var h = new Hilbert3d(16, 'zxy');
+    testOracle(h, "120");
+  });
+
+  it('should pass with (16, "xzy") mapping', function() {
+    var h = new Hilbert3d(16, 'xzy');
+    testOracle(h, "021");
+  });
+
+  it('should pass with (16, "yxz") mapping', function() {
+    var h = new Hilbert3d(16, 'yxz');
+    testOracle(h, "102");
+  });
+
+  it('should pass with (16, "zyx") mapping', function() {
+    var h = new Hilbert3d(16, 'zyx');
     testOracle(h, "210");
   });
 });
