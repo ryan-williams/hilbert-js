@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ctor_arg=
+if [ "${1:0:1}" == "-" ]; then
+	ctor_arg="${1:1}"
+	shift
+fi
+
+for arg in $@; do
+	echo "${arg}:\t\c"
+	node -p -e "var h = new (require('./hilbert').Hilbert3d)($ctor_arg); h.xyz($arg).arr"
+done
